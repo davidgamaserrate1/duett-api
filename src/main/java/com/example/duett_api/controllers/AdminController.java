@@ -2,10 +2,9 @@ package com.example.duett_api.controllers;
 
 import com.example.duett_api.domain.user.User;
 import com.example.duett_api.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +21,14 @@ public class AdminController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
+    }
+
+    @DeleteMapping("/users/delete/{id}")
+    public ResponseEntity<String> deleteUserById(@PathVariable String id) {
+        if (userRepository.findById(id).isEmpty()){
+            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+        }
+        userRepository.deleteById(id);
+        return ResponseEntity.ok("Usuario excluido com sucesso!");
     }
 }
