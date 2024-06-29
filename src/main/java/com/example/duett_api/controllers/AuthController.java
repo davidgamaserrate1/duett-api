@@ -1,54 +1,42 @@
 package com.example.duett_api.controllers;
 
-import com.example.duett_api.domain.user.User;
 import com.example.duett_api.dto.LoginRequestDTO;
 import com.example.duett_api.dto.RegisterDTO;
 import com.example.duett_api.dto.ResponseLoginDTO;
-import com.example.duett_api.infra.security.TokenService;
-import com.example.duett_api.repositories.UserRepository;
+import com.example.duett_api.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO body){
-        User user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not fond"));
+        Object result = authService.login(body);
 
-        if( passwordEncoder.matches(body.password(), user.getPassword())){
-            String token = this.tokenService.generateToken(user);
-            return ResponseEntity.ok(new ResponseLoginDTO(user.getId(),user.getName(), user.getProfile(), token));
+        if (result instanceof ResponseLoginDTO) {
+            return ResponseEntity.ok(result);
         }
-        return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
     }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterDTO body){
-        if (! this.repository.findByEmail(body.email()).isEmpty() || ! this.repository.findByCpf(body.cpf()).isEmpty()){
-            return new ResponseEntity<>("Email ou CPF já cadastrado", HttpStatus.BAD_REQUEST);
+        Object register = authService.register(body);
+
+        if (register instanceof ResponseLoginDTO) {
+            return ResponseEntity.ok(register);
         }
-
-        User newUser = new User();
-        newUser.setName(body.name());
-        newUser.setEmail(body.email());
-        newUser.setPassword(passwordEncoder.encode(body.password()));
-        newUser.setCpf(body.cpf());
-        newUser.setProfile(body.profile());
-        this.repository.save(newUser);
-
-        String token = this.tokenService.generateToken(newUser);
-        return ResponseEntity.ok(new ResponseLoginDTO(newUser.getId(), newUser.getName(), newUser.getProfile(), token));
-
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(register);
     }
 
 }
