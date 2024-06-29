@@ -27,7 +27,7 @@ public class AuthController {
 
         if( passwordEncoder.matches(body.password(), user.getPassword())){
             String token = this.tokenService.generateToken(user);
-            return ResponseEntity.ok(new ResponseLoginDTO(user.getName(), user.getProfile(), token));
+            return ResponseEntity.ok(new ResponseLoginDTO(user.getId(),user.getName(), user.getProfile(), token));
         }
         return ResponseEntity.badRequest().build();
     }
@@ -47,7 +47,7 @@ public class AuthController {
         this.repository.save(newUser);
 
         String token = this.tokenService.generateToken(newUser);
-        return ResponseEntity.ok(new ResponseLoginDTO(newUser.getName(), newUser.getProfile(), token));
+        return ResponseEntity.ok(new ResponseLoginDTO(newUser.getId(), newUser.getName(), newUser.getProfile(), token));
 
     }
 
