@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,11 +35,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterDTO body){
         if (! this.repository.findByEmail(body.email()).isEmpty() || ! this.repository.findByCpf(body.cpf()).isEmpty()){
-            return new ResponseEntity<>("Usuario ja cadastrado", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Email ou CPF já cadastrado", HttpStatus.BAD_REQUEST);
         }
 
         User newUser = new User();
-
         newUser.setName(body.name());
         newUser.setEmail(body.email());
         newUser.setPassword(passwordEncoder.encode(body.password()));
