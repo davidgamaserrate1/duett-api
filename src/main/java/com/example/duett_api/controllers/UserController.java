@@ -1,36 +1,37 @@
 package com.example.duett_api.controllers;
 
-import com.example.duett_api.domain.user.User;
 import com.example.duett_api.dto.ChangePasswordDto;
-import com.example.duett_api.repositories.UserRepository;
+import com.example.duett_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> getAllUsers(@RequestBody ChangePasswordDto body) {
-        User user = this.userRepository.findById(body.id()).orElseThrow(() -> new RuntimeException("User not fond"));
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto body) {
+        String result = userService.changePassword(body);
 
-        if (!this.passwordEncoder.matches(body.old_password(), user.getPassword()) ){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Senha incorreta");
+        switch (result) {
+            case "Senha alterada com sucesso!":
+                return ResponseEntity.ok(result);
+            case "Usuario não encontrado":
+                return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+            case "Senha incorreta":
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            default:
+                return new ResponseEntity<>("Erro ao atualizar senha", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        String new_password = this.passwordEncoder.encode(body.new_password());
-        user.setPassword(new_password);
-        this.userRepository.save(user);
-        return ResponseEntity.ok("Senha alterada com sucesso!");
     }
 }
