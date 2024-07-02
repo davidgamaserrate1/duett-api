@@ -21,17 +21,24 @@ public class UserController {
 
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto body) {
-        String result = userService.changePassword(body);
+        try{
+            if(body.id() == null || body.old_password() == null|| body.new_password() == null ){
+                return new ResponseEntity<>("Por favor, preencha todos os campos", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
-        switch (result) {
-            case "Senha alterada com sucesso!":
-                return ResponseEntity.ok(result);
-            case "Usuario não encontrado":
-                return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-            case "Senha incorreta":
-                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-            default:
-                return new ResponseEntity<>("Erro ao atualizar senha", HttpStatus.INTERNAL_SERVER_ERROR);
+            String result = userService.changePassword(body);
+            switch (result) {
+                case "Senha alterada com sucesso!":
+                    return ResponseEntity.ok(result);
+                case "Usuario não encontrado":
+                    return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+                case "Senha incorreta":
+                    return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+                default:
+                    return new ResponseEntity<>("Erro ao atualizar senha", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }catch (NullPointerException e) {
+            return new ResponseEntity<>("Erro interno no servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
