@@ -25,11 +25,14 @@ public class AdminController {
 
     @DeleteMapping("/users/delete/{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable String id) {
-        String deleteResponse = this.adminService.deleteUserById(id);
-        if(deleteResponse.equals("not_found")){
-            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+        try {
+            String deleteResponse = this.adminService.deleteUserById(id);
+            if(deleteResponse.equals("not_found")){
+                return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.ok(deleteResponse);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return ResponseEntity.ok(deleteResponse);
     }
 }

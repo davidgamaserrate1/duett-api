@@ -37,7 +37,7 @@ public class UserController {
                 default:
                     return new ResponseEntity<>("Erro ao atualizar senha", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        }catch (NullPointerException e) {
+        }catch (Exception e) {
             return new ResponseEntity<>("Erro interno no servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

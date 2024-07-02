@@ -26,11 +26,9 @@ public class AuthController {
             }
 
             Object result = authService.login(body);
-
             if (result instanceof ResponseLoginDTO) {
                 return ResponseEntity.ok(result);
             }
-
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,8 +41,8 @@ public class AuthController {
             if(body.name() == null ||body.email() == null || body.password() == null || body.cpf() == null || body.profile() == null){
                 return new ResponseEntity<>("Por favor, preencha todos os campos", HttpStatus.BAD_REQUEST);
             }
-            Object register = authService.register(body);
 
+            Object register = authService.register(body);
             if (register instanceof ResponseLoginDTO) {
                 return ResponseEntity.ok(register);
             }
