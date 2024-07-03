@@ -19,7 +19,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                         .description("Esta é uma API RESTful para gerenciamento de usuários, incluindo operações de registro, login, mudança de senha e administração de usuários.")
                         .version("1.0.0"))
                 .components(new Components().addSecuritySchemes("bearer-jwt",
-                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("Bearer").bearerFormat("JWT")));
+                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 
     @Override

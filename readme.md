@@ -57,7 +57,9 @@ Para configurar e executar este projeto localmente, siga os passos abaixo:
       ```
 
     - Aqui você pode visualizar todos os endpoints disponíveis, os modelos de dados utilizados e realizar testes interativos com a API.
+    - Alem disso, existe um arquivo disponível "swagger.json" no formato JSON, na raiz do projeto  
 
+ 
 
 ## Acesso ao Sistema
 
