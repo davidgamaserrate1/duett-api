@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Erro ao atualizar senha", content = @Content)
     })
     @PostMapping("/change-password")
+    @SecurityRequirement(name = "bearer-jwt")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto body) {
         try{
             if(body.id() == null || body.old_password() == null|| body.new_password() == null ){

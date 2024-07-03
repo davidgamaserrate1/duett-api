@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +32,13 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content)
     })
     @GetMapping("/users")
+    @SecurityRequirement(name = "bearer-jwt")
     public ResponseEntity<Page<User>> getAllUsers( @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Page<User> users = this.adminService.getAllUsers(page, size);
         return ResponseEntity.ok(users);
     }
 
-    @Operation(summary = "Remove um usuarios da lista")
+    @Operation(summary = "Remove o usuário com id passado como parâmetro")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
@@ -45,11 +47,12 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content)
     })
     @DeleteMapping("/users/delete/{id}")
+    @SecurityRequirement(name = "bearer-jwt")
     public ResponseEntity<String> deleteUserById(@PathVariable String id) {
         try {
             String deleteResponse = this.adminService.deleteUserById(id);
             if(deleteResponse.equals("not_found")){
-                return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Usuário não encontrado", HttpStatus.NOT_FOUND);
             }
             return ResponseEntity.ok(deleteResponse);
         }catch (Exception e){
