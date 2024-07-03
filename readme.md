@@ -10,6 +10,7 @@ Esta é uma API RESTful desenvolvida para gerenciar usuários em uma aplicação
 - Swagger (SpringDoc OpenAPI)
 - H2 Database (em memória para desenvolvimento / revisão)
 - Lombok (para reduzir boilerplate)
+
 ## Funcionalidades
 
 A API oferece as seguintes funcionalidades principais:
@@ -20,6 +21,11 @@ A API oferece as seguintes funcionalidades principais:
 - Administração de usuários (requer perfil de administrador):
     - Listar todos os usuários (`GET /admin/users`)
     - Excluir um usuário pelo ID (`DELETE /admin/users/delete/{id}`)
+
+## Requisitos
+
+- Java 17 ou superior
+- Maven 3.x
 
 ## Configuração
 
@@ -51,6 +57,28 @@ Para configurar e executar este projeto localmente, siga os passos abaixo:
       ```
 
     - Aqui você pode visualizar todos os endpoints disponíveis, os modelos de dados utilizados e realizar testes interativos com a API.
+
+
+## Acesso ao Sistema
+
+### Credenciais de Acesso
+
+Ao iniciar o projeto, algumas credenciais são geradas automaticamente conforme configurado no arquivo `DatabaseSeedConfig.java`.
+
+Você pode acessar o sistema utilizando as seguintes credenciais geradas em tempo de execução:
+
+- **Perfil ADMIN:**
+    - **Email:** admin@admin
+    - **Senha:** admin
+
+- **Perfil USER:**
+    - **Email:** alice.johnson@example.com
+    - **Senha:** password123
+
+Essas credenciais permitem que você explore os diferentes perfis de usuário e teste as funcionalidades da API de gerenciamento de usuários.
+
+Caso prefira, também é possível cadastrar novos usuários através dos endpoints disponíveis na API.
+
 
 ## Exemplos de Requisições
 
