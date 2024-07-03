@@ -40,12 +40,7 @@ public class AuthService {
             return  ("Por favor, preencha todos os campos.");
         }
 
-        User newUser = new User();
-        newUser.setName(body.name());
-        newUser.setEmail(body.email());
-        newUser.setPassword(passwordEncoder.encode(body.password()));
-        newUser.setCpf(body.cpf());
-        newUser.setProfile(body.profile());
+        User newUser = new User(null, body.name(),body.cpf(),body.email(),passwordEncoder.encode(body.password()),body.profile());
 
         this.repository.save(newUser);
         String token = this.tokenService.generateToken(newUser);

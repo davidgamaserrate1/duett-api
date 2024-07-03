@@ -72,8 +72,8 @@ Você pode acessar o sistema utilizando as seguintes credenciais geradas em temp
     - **Senha:** admin
 
 - **Perfil USER:**
-    - **Email:** alice.johnson@example.com
-    - **Senha:** password123
+    - **Email:** user@user
+    - **Senha:** user
 
 Essas credenciais permitem que você explore os diferentes perfis de usuário e teste as funcionalidades da API de gerenciamento de usuários.
 
