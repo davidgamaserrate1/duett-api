@@ -2,6 +2,11 @@ package com.example.duett_api.controllers;
 
 import com.example.duett_api.dto.ChangePasswordDto;
 import com.example.duett_api.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +23,20 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
+    @Operation(summary = "Realiza login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Senha alterada com sucesso!", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ChangePasswordDto.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Por favor, preencha todos os campos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario não encontrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro ao atualizar senha", content = @Content)
+    })
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto body) {
         try{
             if(body.id() == null || body.old_password() == null|| body.new_password() == null ){
-                return new ResponseEntity<>("Por favor, preencha todos os campos", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>("Por favor, preencha todos os campos", HttpStatus.BAD_REQUEST);
             }
 
             String result = userService.changePassword(body);

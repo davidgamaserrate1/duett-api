@@ -1,9 +1,15 @@
 package com.example.duett_api.controllers;
 
+import com.example.duett_api.domain.user.User;
 import com.example.duett_api.dto.LoginRequestDTO;
 import com.example.duett_api.dto.RegisterDTO;
 import com.example.duett_api.dto.ResponseLoginDTO;
 import com.example.duett_api.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
+    @Operation(summary = "Realiza login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login realizado com sucesso", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = LoginRequestDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Por favor, preencha todos os campos", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Usuário não encontrado ou senha incorreta", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor", content = @Content)
+    })
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO body){
         try{
@@ -34,7 +49,14 @@ public class AuthController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @Operation(summary = "Cadastro de usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Por favor, preencha todos os campos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor", content = @Content),
+    })
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterDTO body){
         try{
